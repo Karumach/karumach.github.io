@@ -16,7 +16,7 @@
 
         body {
             /* ФОН СТРАНИЦЫ: */
-            background-image: url(../'фон для игры.jpg');
+            background-image: url(../'фон.jpg');
             background-size: cover;
             background-position: center;
             background-color: #0e0e10; 
