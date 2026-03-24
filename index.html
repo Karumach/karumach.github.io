@@ -3,11 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FullArt</title>
+    <title>FullArt Game</title>
     <style>
-        /* =========================================
-           НАСТРОЙКИ КАРТИНОК И ПЕРЕМЕННЫХ
-        ========================================= */
         :root {
             --mx: 50%;
             --my: 50%;
@@ -16,47 +13,44 @@
         }
 
         body {
-            /* ФОН СТРАНИЦЫ: */
             background-image: url('фон.jpg'); 
-            background-size: 110% 110%; 
+            background-size: cover;
             background-position: center;
-            background-repeat: no-repeat;
+            background-attachment: fixed;
             background-color: #0e0e10; 
-            
             height: 100vh;
             margin: 0;
             display: flex;
-            flex-direction: column; /* Добавили, чтобы элементы выстраивались в колонку */
+            flex-direction: column;
             justify-content: center;
             align-items: center;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: 'Segoe UI', sans-serif;
             overflow: hidden;
             color: white;
-
-            animation: floatingBackground 15s ease-in-out infinite;
         }
 
-        @keyframes floatingBackground {
-            0% { background-position: 50% 50%; }
-            50% { background-position: 48% 52%; }
-            100% { background-position: 50% 50%; }
-        }
-
+        /* КНОПКА СТАРТА */
         #play-btn {
-            opacity: 0;
-            width: 764px; 
-            height: 763px;
-            border: none;
-            background-color: transparent;
+            position: relative;
+            z-index: 10;
+            width: 300px; /* Умеренный размер */
+            height: 300px;
+            border: 2px solid rgba(103, 193, 245, 0.5);
+            border-radius: 50%; /* Сделаем круглой для удобства */
+            background-color: rgba(103, 193, 245, 0.1); 
             background-image: url('кнопка копия.png');
             background-size: contain;
             background-position: center;
             background-repeat: no-repeat;
+            
             cursor: pointer;
-            transition: opacity 2s ease, transform 0.3s ease, filter 0.3s;
-            text-indent: -9999px; 
-            position: absolute; 
-            z-index: 100;/* Чтобы кнопка не сдвигала другие элементы */
+            color: #67c1f5;
+            font-size: 24px;
+            font-weight: bold;
+            text-transform: uppercase;
+            
+            opacity: 0;
+            transition: all 0.5s ease;
         }
 
         #play-btn.visible { 
@@ -64,27 +58,27 @@
         }
 
         #play-btn:hover {
-            filter: brightness(1.2) drop-shadow(0 0 10px rgba(103, 193, 245, 0.8));
+            filter: brightness(1.2) drop-shadow(0 0 20px rgba(103, 193, 245, 0.8));
             transform: scale(1.05);
+            background-color: rgba(103, 193, 245, 0.2);
         }
 
         #countdown {
             display: none;
-            font-size: 80px;
+            font-size: 100px;
             font-weight: bold;
             color: #67c1f5;
-            position: absolute;
+            text-shadow: 0 0 20px rgba(103, 193, 245, 0.8);
+            z-index: 5;
         }
 
-        /* =========================================
-           STEAM CARD EFFECT
-        ========================================= */
-
+        /* КАРТОЧКА */
         .card-container {
             display: none;
-            width: 300px;
-            height: 450px;
-            perspective: 1000px; 
+            width: 320px;
+            height: 480px;
+            perspective: 1000px;
+            z-index: 5;
         }
 
         .card-inner {
@@ -94,6 +88,7 @@
             transform-style: preserve-3d;
             transform: rotateX(var(--rx)) rotateY(var(--ry));
             transition: transform 0.1s ease-out;
+            cursor: pointer;
         }
 
         .card-container.flipped .card-inner {
@@ -106,86 +101,53 @@
             height: 100%;
             position: absolute;
             backface-visibility: hidden;
-            border-radius: 12px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            overflow: hidden;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.6);
-            /* Картинки теперь задаются через JS */
+            border-radius: 15px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
             background-size: cover;
             background-position: center;
-        }
-
-        .card-front {
-            background-color: #222;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.8);
         }
 
         .card-back {
-            background-color: #333;
             transform: rotateY(180deg);
         }
 
+        /* Блик (Steam эффект) */
         .card-face::after {
             content: "";
             position: absolute;
             inset: 0;
-            background: linear-gradient(
-                125deg,
-                rgba(255,255,255,0) 0%,
-                rgba(255,255,255,0) 30%,
-                rgba(255,255,255,0.1) 40%,
-                rgba(255,255,255,0.4) 50%,
-                rgba(255,255,255,0.1) 60%,
-                rgba(255,255,255,0) 70%,
-                rgba(255,255,255,0) 100%
-            ),
-            radial-gradient(
-                circle at var(--mx) var(--my),
-                rgba(255,255,255,0.2) 0%,
-                rgba(255,255,255,0) 60%
-            );
-            background-position: calc(var(--mx) * 0.5) calc(var(--my) * 0.5);
+            background: linear-gradient(125deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.3) 50%, rgba(255,255,255,0) 100%);
             background-size: 200% 200%;
+            background-position: var(--mx) var(--my);
             mix-blend-mode: overlay;
             opacity: 0;
             transition: opacity 0.3s;
+            border-radius: 15px;
         }
 
         .card-container:hover .card-face::after {
             opacity: 1;
         }
 
-        /* =========================================
-           КНОПКА СЛЕДУЮЩЕЙ КАРТЫ
-        ========================================= */
+        /* КНОПКА ДАЛЕЕ */
         #next-arrow {
-            position: absolute;
-            bottom: 50px;
-            opacity: 0;
-            visibility: hidden;
-            background: rgba(103, 193, 245, 0.1);
+            display: none;
+            margin-top: 30px;
+            padding: 12px 30px;
+            background: rgba(103, 193, 245, 0.2);
             border: 2px solid #67c1f5;
             color: #67c1f5;
-            padding: 12px 25px;
-            font-size: 18px;
-            border-radius: 8px;
+            border-radius: 10px;
             cursor: pointer;
-            transition: all 0.3s ease;
-            transform: translateY(20px);
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            font-size: 18px;
+            transition: 0.3s;
+            z-index: 10;
         }
 
         #next-arrow.visible {
-            opacity: 1;
-            visibility: visible;
-            transform: translateY(0);
+            display: block;
         }
-
-        #next-arrow:hover {
-            background: rgba(103, 193, 245, 0.3);
-            box-shadow: 0 0 15px rgba(103, 193, 245, 0.6);
-        }
-
     </style>
 </head>
 <body>
@@ -193,48 +155,47 @@
     <button id="play-btn">FullArt</button>
     <div id="countdown">3</div>
 
-    <div class="card-container" id="card">
-        <div class="card-inner">
+    <div class="card-container" id="card-container">
+        <div class="card-inner" id="card-inner">
             <div class="card-face card-front" id="card-front"></div>
             <div class="card-face card-back" id="card-back"></div>
         </div>
     </div>
 
-    <button id="next-arrow">➡ Следующая карта</button>
+    <button id="next-arrow">Следующая карта ➡</button>
 
     <script>
-        // =========================================
-        // СПИСОК КАРТОЧЕК (Добавляй свои картинки сюда)
-        // =========================================
+        // СПИСОК КАРТ
         const deck = [
-            { front: url:('кресло капуста.png'), back: "'кресло капуста текст.png'" },
-            { front: "'заха хадид.png'", back: "'заха хадид текст.png'" },
-            { front: "'рубашка3.png'", back: "'лицо3.png'" }
-            // Можно продолжать список через запятую
+            { front: 'кресло капуста.png', back: 'кресло капуста текст.png' },
+            { front: 'рубашка2.png', back: 'лицо2.png' }
         ];
         
         let currentIndex = 0;
 
         const playBtn = document.getElementById('play-btn');
         const countdownEl = document.getElementById('countdown');
-        const card = document.getElementById('card');
+        const cardContainer = document.getElementById('card-container');
+        const cardInner = document.getElementById('card-inner');
         const cardFront = document.getElementById('card-front');
         const cardBack = document.getElementById('card-back');
         const nextArrow = document.getElementById('next-arrow');
 
-        // Функция установки картинок
-        function setCardImages(index) {
-            cardFront.style.backgroundImage = `url(${deck[index].front})`;
-            cardBack.style.backgroundImage = `url(${deck[index].back})`;
+        // Показываем кнопку старта через полсекунды
+        setTimeout(() => {
+            playBtn.classList.add('visible');
+        }, 500);
+
+        function updateCardImages() {
+            cardFront.style.backgroundImage = `url('${deck[currentIndex].front}')`;
+            cardBack.style.backgroundImage = `url('${deck[currentIndex].back}')`;
         }
 
-        // Появление кнопки
-        setTimeout(() => playBtn.classList.add('visible'), 500);
-
-        // Логика стартовой кнопки
+        // Логика кнопки старта
         playBtn.addEventListener('click', () => {
             playBtn.style.display = 'none';
             countdownEl.style.display = 'block';
+            
             let count = 3;
             countdownEl.innerText = count;
 
@@ -243,70 +204,55 @@
                 if (count <= 0) {
                     clearInterval(timer);
                     countdownEl.style.display = 'none';
-                    
-                    // Устанавливаем первую карту и показываем контейнер
-                    setCardImages(currentIndex);
-                    card.style.display = 'block';
+                    updateCardImages();
+                    cardContainer.style.display = 'block';
                 } else {
                     countdownEl.innerText = count;
                 }
             }, 800);
         });
 
-        // ПОВОРОТ ПО КЛИКУ НА КАРТУ
-        card.addEventListener('click', () => {
-            // Если карта еще не перевернута — переворачиваем
-            if (!card.classList.contains('flipped')) {
-                card.classList.add('flipped');
-                
-                // Показываем стрелку, когда анимация переворота завершится
+        // Переворот карты
+        cardInner.addEventListener('click', () => {
+            if (!cardContainer.classList.contains('flipped')) {
+                cardContainer.classList.add('flipped');
                 setTimeout(() => {
                     nextArrow.classList.add('visible');
                 }, 600);
             }
         });
 
-        // ПЕРЕХОД К СЛЕДУЮЩЕЙ КАРТЕ ПО КЛИКУ НА СТРЕЛКУ
+        // Кнопка "Далее"
         nextArrow.addEventListener('click', () => {
-            nextArrow.classList.remove('visible'); // Прячем стрелку
-            card.classList.remove('flipped');      // Переворачиваем карту обратно
+            nextArrow.classList.remove('visible');
+            cardContainer.classList.remove('flipped');
 
-            // Ждем, пока карта перевернется рубашкой вверх, и меняем картинки
             setTimeout(() => {
-                currentIndex++;
-                
-                // Если карты закончились, начинаем сначала
-                if (currentIndex >= deck.length) {
-                    currentIndex = 0;
-                }
-                
-                setCardImages(currentIndex);
+                currentIndex = (currentIndex + 1) % deck.length;
+                updateCardImages();
             }, 600);
         });
 
-        // STEAM EFFECT LOGIC (не менялся)
-        card.addEventListener('mousemove', (e) => {
-            if (card.classList.contains('flipped')) return;
+        // Эффект наклона (Steam)
+        cardContainer.addEventListener('mousemove', (e) => {
+            if (cardContainer.classList.contains('flipped')) return;
 
-            const rect = card.getBoundingClientRect();
+            const rect = cardContainer.getBoundingClientRect();
             const x = e.clientX - rect.left;
             const y = e.clientY - rect.top;
 
-            const xPct = (x / rect.width) * 100;
-            const yPct = (y / rect.height) * 100;
+            const rx = ((y / rect.height) - 0.5) * -30;
+            const ry = ((x / rect.width) - 0.5) * 30;
 
-            const rx = ((y / rect.height) - 0.5) * -25;
-            const ry = ((x / rect.width) - 0.5) * 25;
-
-            card.style.setProperty('--mx', `${xPct}%`);
-            card.style.setProperty('--my', `${yPct}%`);
-            card.style.setProperty('--rx', `${rx}deg`);
-            card.style.setProperty('--ry', `${ry}deg`);
+            cardContainer.style.setProperty('--mx', `${(x / rect.width) * 100}%`);
+            cardContainer.style.setProperty('--my', `${(y / rect.height) * 100}%`);
+            cardContainer.style.setProperty('--rx', `${rx}deg`);
+            cardContainer.style.setProperty('--ry', `${ry}deg`);
         });
 
-        card.addEventListener('mouseleave', () => {
-            card.style.setProperty('--rx', `0deg`);
-            card.style.setProperty('--ry', `0deg`);
+        cardContainer.addEventListener('mouseleave', () => {
+            cardContainer.style.setProperty('--rx', '0deg');
+            cardContainer.style.setProperty('--ry', '0deg');
         });
     </script>
 </body>
