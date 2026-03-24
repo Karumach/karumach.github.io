@@ -55,7 +55,8 @@
             cursor: pointer;
             transition: opacity 2s ease, transform 0.3s ease, filter 0.3s;
             text-indent: -9999px; 
-            position: absolute; /* Чтобы кнопка не сдвигала другие элементы */
+            position: absolute; 
+            z-index: 100;/* Чтобы кнопка не сдвигала другие элементы */
         }
 
         #play-btn.visible { 
