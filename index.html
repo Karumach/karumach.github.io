@@ -16,21 +16,42 @@
             --ry: 0deg;
         }
 
-        body {
-            /* ФОН СТРАНИЦЫ: */
-            background-image: url(../'фон для игры.jpg');
-            background-size: cover;
-            background-position: center;
-            background-color: #0e0e10; 
-            height: 100vh;
-            margin: 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            overflow: hidden;
-            color: white;
-        }
+    body {
+    /* ФОН СТРАНИЦЫ: */
+  
+    background-image: url('фон.jpg'); 
+    
+ 
+    background-size: 110% 110%; 
+    background-position: center;
+    background-repeat: no-repeat;
+    background-color: #0e0e10; 
+    
+    height: 100vh;
+    margin: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    overflow: hidden;
+    color: white;
+
+ 
+    animation: floatingBackground 15s ease-in-out infinite;
+}
+
+
+@keyframes floatingBackground {
+    0% {
+        background-position: 50% 50%;
+    }
+    50% {
+        background-position: 48% 52%; /* Легкий сдвиг по диагонали */
+    }
+    100% {
+        background-position: 50% 50%;
+    }
+}
 
        #play-btn {
     opacity: 0;
@@ -110,14 +131,14 @@
 
         .card-front {
             /* ТВОЯ КАРТИНКА РУБАШКИ: */
-            background-image: url(../'твой_путь_к_рубашке.jpg');
+            background-image: url(../'кресло капуста.png');
             background-size: cover;
             background-color: #222;
         }
 
         .card-back {
             /* ТВОЯ КАРТИНКА ЛИЦЕВОЙ СТОРОНЫ: */
-            background-image: url('твой_путь_к_лицу_карты.jpg');
+            background-image: url('кресло капуста текст.png');
             background-size: cover;
             background-color: #333;
             transform: rotateY(180deg);
