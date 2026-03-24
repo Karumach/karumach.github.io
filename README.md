@@ -30,25 +30,37 @@
             color: white;
         }
 
-        /* Кнопка "Играть" */
-        #play-btn {
-            opacity: 0;
-            padding: 15px 40px;
-            font-size: 20px;
-            background: transparent;
-            color: #67c1f5; /* Цвет в стиле Steam */
-            border: 2px solid #67c1f5;
-            border-radius: 5px;
-            cursor: pointer;
-            transition: opacity 2s ease, background 0.3s, box-shadow 0.3s;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-        }
-        #play-btn.visible { opacity: 1; }
-        #play-btn:hover {
-            background: rgba(103, 193, 245, 0.2);
-            box-shadow: 0 0 20px rgba(103, 193, 245, 0.4);
-        }
+ #play-btn {
+    opacity: 0;
+    width: 764px; 
+    height: 763px;
+    
+    /* Убираем стандартные рамки и фон */
+    border: none;
+    background-color: transparent;
+    
+    /* Добавляем ваше изображение */
+    background-image: url('кнопка копия.png');
+    background-size: contain;
+    background-position: center;
+    background-repeat: no-repeat;
+    
+    cursor: pointer;
+    transition: opacity 2s ease, transform 0.3s ease, filter 0.3s;
+    
+    /* Если на картинке уже есть текст, уберите текст из HTML кнопки */
+    text-indent: -9999px; /* Скрывает текст, если он остался в HTML для SEO */
+}
+
+#play-btn.visible { 
+    opacity: 1; 
+}
+
+#play-btn:hover {
+    /* Вместо изменения цвета фона добавим легкое свечение или увеличение */
+    filter: brightness(1.2) drop-shadow(0 0 10px rgba(103, 193, 245, 0.8));
+    transform: scale(1.05);
+}
 
         /* Отсчет */
         #countdown {
