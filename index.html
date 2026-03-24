@@ -6,89 +6,73 @@
     <title>FullArt</title>
     <style>
         /* =========================================
-           НАСТРОЙКИ КАРТИНОК
+           НАСТРОЙКИ КАРТИНОК И ПЕРЕМЕННЫХ
         ========================================= */
         :root {
-            /* Переменные для координат (обновляются через JS) */
             --mx: 50%;
             --my: 50%;
             --rx: 0deg;
             --ry: 0deg;
         }
 
-    body {
-    /* ФОН СТРАНИЦЫ: */
-  
-    background-image: url('фон.jpg'); 
-    
- 
-    background-size: 110% 110%; 
-    background-position: center;
-    background-repeat: no-repeat;
-    background-color: #0e0e10; 
-    
-    height: 100vh;
-    margin: 0;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    overflow: hidden;
-    color: white;
+        body {
+            /* ФОН СТРАНИЦЫ: */
+            background-image: url('фон.jpg'); 
+            background-size: 110% 110%; 
+            background-position: center;
+            background-repeat: no-repeat;
+            background-color: #0e0e10; 
+            
+            height: 100vh;
+            margin: 0;
+            display: flex;
+            flex-direction: column; /* Добавили, чтобы элементы выстраивались в колонку */
+            justify-content: center;
+            align-items: center;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            overflow: hidden;
+            color: white;
 
- 
-    animation: floatingBackground 15s ease-in-out infinite;
-}
+            animation: floatingBackground 15s ease-in-out infinite;
+        }
 
+        @keyframes floatingBackground {
+            0% { background-position: 50% 50%; }
+            50% { background-position: 48% 52%; }
+            100% { background-position: 50% 50%; }
+        }
 
-@keyframes floatingBackground {
-    0% {
-        background-position: 50% 50%;
-    }
-    50% {
-        background-position: 48% 52%; /* Легкий сдвиг по диагонали */
-    }
-    100% {
-        background-position: 50% 50%;
-    }
-}
+        #play-btn {
+            opacity: 0;
+            width: 764px; 
+            height: 763px;
+            border: none;
+            background-color: transparent;
+            background-image: url('кнопка копия.png');
+            background-size: contain;
+            background-position: center;
+            background-repeat: no-repeat;
+            cursor: pointer;
+            transition: opacity 2s ease, transform 0.3s ease, filter 0.3s;
+            text-indent: -9999px; 
+            position: absolute; /* Чтобы кнопка не сдвигала другие элементы */
+        }
 
-       #play-btn {
-    opacity: 0;
-    width: 764px; 
-    height: 763px;
-   
-    border: none;
-    background-color: transparent;
-    
-  
-    background-image: url('кнопка копия.png');
-    background-size: contain;
-    background-position: center;
-    background-repeat: no-repeat;
-    
-    cursor: pointer;
-    transition: opacity 2s ease, transform 0.3s ease, filter 0.3s;
-    
-    text-indent: -9999px; 
-}
+        #play-btn.visible { 
+            opacity: 1; 
+        }
 
-#play-btn.visible { 
-    opacity: 1; 
-}
+        #play-btn:hover {
+            filter: brightness(1.2) drop-shadow(0 0 10px rgba(103, 193, 245, 0.8));
+            transform: scale(1.05);
+        }
 
-#play-btn:hover {
-    /* Вместо изменения цвета фона добавим легкое свечение или увеличение */
-    filter: brightness(1.2) drop-shadow(0 0 10px rgba(103, 193, 245, 0.8));
-    transform: scale(1.05);
-}
-
-        /* Отсчет */
         #countdown {
             display: none;
             font-size: 80px;
             font-weight: bold;
             color: #67c1f5;
+            position: absolute;
         }
 
         /* =========================================
@@ -99,7 +83,7 @@
             display: none;
             width: 300px;
             height: 450px;
-            perspective: 1000px; /* Создает 3D пространство */
+            perspective: 1000px; 
         }
 
         .card-inner {
@@ -107,12 +91,10 @@
             height: 100%;
             position: relative;
             transform-style: preserve-3d;
-            /* Используем переменные из JS для наклона */
             transform: rotateX(var(--rx)) rotateY(var(--ry));
             transition: transform 0.1s ease-out;
         }
 
-        /* Когда карта переворачивается */
         .card-container.flipped .card-inner {
             transform: rotateY(180deg) rotateX(0deg) !important;
             transition: transform 0.6s cubic-bezier(0.23, 1, 0.32, 1);
@@ -127,29 +109,24 @@
             border: 1px solid rgba(255, 255, 255, 0.1);
             overflow: hidden;
             box-shadow: 0 20px 40px rgba(0,0,0,0.6);
+            /* Картинки теперь задаются через JS */
+            background-size: cover;
+            background-position: center;
         }
 
         .card-front {
-            /* ТВОЯ КАРТИНКА РУБАШКИ: */
-            background-image: url(../'кресло капуста.png');
-            background-size: cover;
             background-color: #222;
         }
 
         .card-back {
-            /* ТВОЯ КАРТИНКА ЛИЦЕВОЙ СТОРОНЫ: */
-            background-image: url('кресло капуста текст.png');
-            background-size: cover;
             background-color: #333;
             transform: rotateY(180deg);
         }
 
-        /* ТОТ САМЫЙ ОТЛИВ (Оверлей) */
         .card-face::after {
             content: "";
             position: absolute;
             inset: 0;
-            /* Радужный блик, который двигается за мышкой */
             background: linear-gradient(
                 125deg,
                 rgba(255,255,255,0) 0%,
@@ -165,7 +142,6 @@
                 rgba(255,255,255,0.2) 0%,
                 rgba(255,255,255,0) 60%
             );
-            /* Смещение градиента в зависимости от мышки */
             background-position: calc(var(--mx) * 0.5) calc(var(--my) * 0.5);
             background-size: 200% 200%;
             mix-blend-mode: overlay;
@@ -177,6 +153,38 @@
             opacity: 1;
         }
 
+        /* =========================================
+           КНОПКА СЛЕДУЮЩЕЙ КАРТЫ
+        ========================================= */
+        #next-arrow {
+            position: absolute;
+            bottom: 50px;
+            opacity: 0;
+            visibility: hidden;
+            background: rgba(103, 193, 245, 0.1);
+            border: 2px solid #67c1f5;
+            color: #67c1f5;
+            padding: 12px 25px;
+            font-size: 18px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            transform: translateY(20px);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+        }
+
+        #next-arrow.visible {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+
+        #next-arrow:hover {
+            background: rgba(103, 193, 245, 0.3);
+            box-shadow: 0 0 15px rgba(103, 193, 245, 0.6);
+        }
+
     </style>
 </head>
 <body>
@@ -186,21 +194,43 @@
 
     <div class="card-container" id="card">
         <div class="card-inner">
-            <div class="card-face card-front"></div>
-            <div class="card-face card-back"></div>
+            <div class="card-face card-front" id="card-front"></div>
+            <div class="card-face card-back" id="card-back"></div>
         </div>
     </div>
 
+    <button id="next-arrow">➡ Следующая карта</button>
+
     <script>
+        // =========================================
+        // СПИСОК КАРТОЧЕК (Добавляй свои картинки сюда)
+        // =========================================
+        const deck = [
+            { front: url:('кресло капуста.png'), back: "'кресло капуста текст.png'" },
+            { front: "'заха хадид.png'", back: "'заха хадид текст.png'" },
+            { front: "'рубашка3.png'", back: "'лицо3.png'" }
+            // Можно продолжать список через запятую
+        ];
+        
+        let currentIndex = 0;
+
         const playBtn = document.getElementById('play-btn');
         const countdownEl = document.getElementById('countdown');
         const card = document.getElementById('card');
-        const cardInner = card.querySelector('.card-inner');
+        const cardFront = document.getElementById('card-front');
+        const cardBack = document.getElementById('card-back');
+        const nextArrow = document.getElementById('next-arrow');
+
+        // Функция установки картинок
+        function setCardImages(index) {
+            cardFront.style.backgroundImage = `url(${deck[index].front})`;
+            cardBack.style.backgroundImage = `url(${deck[index].back})`;
+        }
 
         // Появление кнопки
         setTimeout(() => playBtn.classList.add('visible'), 500);
 
-        // Логика кнопки
+        // Логика стартовой кнопки
         playBtn.addEventListener('click', () => {
             playBtn.style.display = 'none';
             countdownEl.style.display = 'block';
@@ -212,6 +242,9 @@
                 if (count <= 0) {
                     clearInterval(timer);
                     countdownEl.style.display = 'none';
+                    
+                    // Устанавливаем первую карту и показываем контейнер
+                    setCardImages(currentIndex);
                     card.style.display = 'block';
                 } else {
                     countdownEl.innerText = count;
@@ -219,40 +252,61 @@
             }, 800);
         });
 
-        // ПОВОРОТ ПО КЛИКУ
+        // ПОВОРОТ ПО КЛИКУ НА КАРТУ
         card.addEventListener('click', () => {
-            card.classList.toggle('flipped');
+            // Если карта еще не перевернута — переворачиваем
+            if (!card.classList.contains('flipped')) {
+                card.classList.add('flipped');
+                
+                // Показываем стрелку, когда анимация переворота завершится
+                setTimeout(() => {
+                    nextArrow.classList.add('visible');
+                }, 600);
+            }
         });
 
-        // STEAM EFFECT LOGIC
+        // ПЕРЕХОД К СЛЕДУЮЩЕЙ КАРТЕ ПО КЛИКУ НА СТРЕЛКУ
+        nextArrow.addEventListener('click', () => {
+            nextArrow.classList.remove('visible'); // Прячем стрелку
+            card.classList.remove('flipped');      // Переворачиваем карту обратно
+
+            // Ждем, пока карта перевернется рубашкой вверх, и меняем картинки
+            setTimeout(() => {
+                currentIndex++;
+                
+                // Если карты закончились, начинаем сначала
+                if (currentIndex >= deck.length) {
+                    currentIndex = 0;
+                }
+                
+                setCardImages(currentIndex);
+            }, 600);
+        });
+
+        // STEAM EFFECT LOGIC (не менялся)
         card.addEventListener('mousemove', (e) => {
-            // Если карта в процессе переворота, не наклоняем
             if (card.classList.contains('flipped')) return;
 
             const rect = card.getBoundingClientRect();
             const x = e.clientX - rect.left;
             const y = e.clientY - rect.top;
 
-            // Вычисляем проценты для градиента
             const xPct = (x / rect.width) * 100;
             const yPct = (y / rect.height) * 100;
 
-            // Вычисляем градусы для наклона (Steam обычно наклоняется плавно, до 15-20 градусов)
             const rx = ((y / rect.height) - 0.5) * -25;
             const ry = ((x / rect.width) - 0.5) * 25;
 
-            // Передаем значения в CSS
             card.style.setProperty('--mx', `${xPct}%`);
             card.style.setProperty('--my', `${yPct}%`);
             card.style.setProperty('--rx', `${rx}deg`);
             card.style.setProperty('--ry', `${ry}deg`);
         });
 
-        // Сброс при уходе мыши
         card.addEventListener('mouseleave', () => {
             card.style.setProperty('--rx', `0deg`);
             card.style.setProperty('--ry', `0deg`);
         });
     </script>
 </body>
-</html> 
+</html>
