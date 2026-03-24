@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FullArt Game</title>
     <style>
         :root {
             --mx: 50%;
@@ -12,7 +13,7 @@
         }
 
         body {
-            background-image: url('фон копия.jpg'); 
+            background-image: url('фон.jpg'); 
             background-size: cover;
             background-position: center;
             background-attachment: fixed;
@@ -26,25 +27,43 @@
             font-family: 'Segoe UI', sans-serif;
             overflow: hidden;
             color: white;
+            position: relative;
+        }
+
+        /* ЭФФЕКТ ЗАТЕМНЕНИЯ ФОНА */
+        #bg-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: black;
+            opacity: 0; /* Сначала полностью прозрачный */
+            transition: opacity 2s ease; /* Плавное затемнение в течение 2 секунд */
+            z-index: 1; /* Поверх фона, но под контентом */
+            pointer-events: none; /* Чтобы слой не мешал кликать на кнопки */
+        }
+
+        /* Когда добавляем этот класс, фон темнеет до 80% (остается 20% видимости) */
+        #bg-overlay.darkened {
+            opacity: 0.8;
         }
 
         /* КНОПКА СТАРТА */
         #play-btn {
             position: relative;
             z-index: 10;
-            width: 800px; 
-            height: 600px;
-            background-image: url('фон буквы.png');
+            width: 300px;
+            height: 300px;
+            background-image: url('кнопка копия.png');
             background-size: contain;
             background-position: center;
             background-repeat: no-repeat;
-            
             cursor: pointer;
             color: #67c1f5;
             font-size: 24px;
             font-weight: bold;
             text-transform: uppercase;
-            
             opacity: 0;
             transition: all 0.5s ease;
         }
@@ -65,7 +84,7 @@
             font-weight: bold;
             color: #67c1f5;
             text-shadow: 0 0 20px rgba(103, 193, 245, 0.8);
-            z-index: 5;
+            z-index: 10;
         }
 
         /* КАРТОЧКА */
@@ -74,7 +93,7 @@
             width: 320px;
             height: 480px;
             perspective: 1000px;
-            z-index: 5;
+            z-index: 10; /* Поднимаем выше оверлея */
         }
 
         .card-inner {
@@ -148,6 +167,8 @@
 </head>
 <body>
 
+    <div id="bg-overlay"></div>
+
     <button id="play-btn">FullArt</button>
     <div id="countdown">3</div>
 
@@ -161,9 +182,8 @@
     <button id="next-arrow">Следующая карта ➡</button>
 
     <script>
-        // СПИСОК КАРТ
         const deck = [
-            { front: 'кресло капуста.png', back: 'кресло капуста тект.png' },
+          { front: 'кресло капуста.png', back: 'кресло капуста тект.png' },
             { front: 'люстра необ.png', back: 'люстра необ текст.png' },
             { front: 'прозрачный стул.png', back: 'прозрачный стул текст.png' }
         ];
@@ -171,6 +191,7 @@
         let currentIndex = 0;
 
         const playBtn = document.getElementById('play-btn');
+        const overlay = document.getElementById('bg-overlay');
         const countdownEl = document.getElementById('countdown');
         const cardContainer = document.getElementById('card-container');
         const cardInner = document.getElementById('card-inner');
@@ -178,21 +199,20 @@
         const cardBack = document.getElementById('card-back');
         const nextArrow = document.getElementById('next-arrow');
 
-        // Показываем кнопку старта через полсекунды
-        setTimeout(() => {
-            playBtn.classList.add('visible');
-        }, 500);
+        setTimeout(() => playBtn.classList.add('visible'), 500);
 
         function updateCardImages() {
             cardFront.style.backgroundImage = `url('${deck[currentIndex].front}')`;
             cardBack.style.backgroundImage = `url('${deck[currentIndex].back}')`;
         }
 
-        // Логика кнопки старта
         playBtn.addEventListener('click', () => {
             playBtn.style.display = 'none';
-            countdownEl.style.display = 'block';
             
+            // ЗАПУСКАЕМ ЗАТЕМНЕНИЕ ФОНА
+            overlay.classList.add('darkened');
+            
+            countdownEl.style.display = 'block';
             let count = 3;
             countdownEl.innerText = count;
 
@@ -209,38 +229,29 @@
             }, 800);
         });
 
-        // Переворот карты
         cardInner.addEventListener('click', () => {
             if (!cardContainer.classList.contains('flipped')) {
                 cardContainer.classList.add('flipped');
-                setTimeout(() => {
-                    nextArrow.classList.add('visible');
-                }, 600);
+                setTimeout(() => nextArrow.classList.add('visible'), 600);
             }
         });
 
-        // Кнопка "Далее"
         nextArrow.addEventListener('click', () => {
             nextArrow.classList.remove('visible');
             cardContainer.classList.remove('flipped');
-
             setTimeout(() => {
                 currentIndex = (currentIndex + 1) % deck.length;
                 updateCardImages();
             }, 600);
         });
 
-        // Эффект наклона (Steam)
         cardContainer.addEventListener('mousemove', (e) => {
             if (cardContainer.classList.contains('flipped')) return;
-
             const rect = cardContainer.getBoundingClientRect();
             const x = e.clientX - rect.left;
             const y = e.clientY - rect.top;
-
             const rx = ((y / rect.height) - 0.5) * -30;
             const ry = ((x / rect.width) - 0.5) * 30;
-
             cardContainer.style.setProperty('--mx', `${(x / rect.width) * 100}%`);
             cardContainer.style.setProperty('--my', `${(y / rect.height) * 100}%`);
             cardContainer.style.setProperty('--rx', `${rx}deg`);
