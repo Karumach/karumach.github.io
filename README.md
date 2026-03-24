@@ -34,12 +34,11 @@
     opacity: 0;
     width: 764px; 
     height: 763px;
-    
-    /* Убираем стандартные рамки и фон */
+   
     border: none;
     background-color: transparent;
     
-    /* Добавляем ваше изображение */
+  
     background-image: url('кнопка копия.png');
     background-size: contain;
     background-position: center;
@@ -48,8 +47,7 @@
     cursor: pointer;
     transition: opacity 2s ease, transform 0.3s ease, filter 0.3s;
     
-    /* Если на картинке уже есть текст, уберите текст из HTML кнопки */
-    text-indent: -9999px; /* Скрывает текст, если он остался в HTML для SEO */
+    text-indent: -9999px; 
 }
 
 #play-btn.visible { 
